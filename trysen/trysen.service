@@ -1,0 +1,14 @@
+[Unit]
+Description="trysen server"
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+User=root
+ExecStart="/EDIT_AND_SET_TO_PATH_TO/getsentry-onpremise/trysen/start-server.sh"
+
+[Install]
+WantedBy=multi-user.target

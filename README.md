@@ -40,9 +40,16 @@ Check commits for detail, below is some major change:
 
 ## Other tips
 
-- Found in `install.sh`: you can create user from CLI, instead of sending mails with: `docker-compose run --rm web createuser"`
+- Found in `install.sh`: you can create user from CLI, instead of sending mails with: `docker-compose run --rm web createuser`
 - Mails may surly end up in the spam folder, check there if you're being invited through email.
 
+
+## `trysen.js`
+
+Used to custom rate limit issue POST requests, so the sentry docker setup will not get huge backlog,
+  and grind the machine to a stall with the unrestrained memory hogging (in redis & kafka mostly)
+
+Check the source, and some config scripts in [./trysen/](./trysen/) for details.
 
 --- --- --- ---
 
