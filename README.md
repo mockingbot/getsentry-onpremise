@@ -1,3 +1,51 @@
+## Adjustment
+
+Check commits for detail, below is some major change:
+- config: reduce `SENTRY_EVENT_RETENTION_DAYS` to 32 days
+- config: reduce `KAFKA_LOG_RETENTION_HOURS` to 2 hours
+- config: enable reverse SSL proxy config in `sentry.conf.py`
+- nginx: listen on host `127.0.0.1`, not `0.0.0.0`
+- nginx: pass host nginx `X-Forward-*` headers
+
+
+## host nginx config
+
+```
+  server {
+    # https with nginx
+    listen                      443;
+    ssl                         on;
+    ssl_certificate             /PATH/TO/CERT.pem;
+    ssl_certificate_key         /PATH/TO/CERT.pem;
+
+    client_max_body_size        64M;                # allow large uploads of files
+
+    # https://github.com/getsentry/onpremise/issues/554
+    proxy_set_header            Host                $host;
+    proxy_set_header            X-Real-IP           $remote_addr;
+    proxy_set_header            X-Forwarded-For     $proxy_add_x_forwarded_for;
+    proxy_set_header            X-Forwarded-Proto   "https";
+
+    # sentry
+    location / {                # main entry
+      proxy_pass                http://127.0.0.1:9000/;
+    }
+    
+    # quick hack to mute error spamming
+    # deny                      1.2.3.4;
+    # deny                      1.2.3.4;
+  }
+```
+
+
+## Other tips
+
+- Found in `install.sh`: you can create user from CLI, instead of sending mails with: `docker-compose run --rm web createuser"`
+- Mails may surly end up in the spam folder, check there if you're being invited through email.
+
+
+--- --- --- ---
+
 # Self-Hosted Sentry 20.11.1
 
 Official bootstrap for running your own [Sentry](https://sentry.io/) with [Docker](https://www.docker.com/).
