@@ -1,6 +1,4 @@
 // NOTE: start the server with command like `npx @dr-js/core@0.4.1-dev7 -eI trysen.js`
-//   or check the `setup/start-server.sh` for better setup
-//   and `trysen.service` for start on boot: (should edit & put under: `/lib/systemd/system/`)
 
 const { resolve } = require('path')
 const { readFileSync } = require('fs')
@@ -38,7 +36,7 @@ const BUFFER_CERT_PEM = readFileSync(resolve(__dirname, './cert.pem')) // use fo
 
 const SERVER_PROXY_ORIGIN = 'http://127.0.0.1:9000' // the sentry docker nginx
 
-const PATH_LOG = resolve(__dirname, './log/')
+const PATH_LOG = resolve(__dirname, './log-gitignore/')
 
 const REGEXP_SENTRY_ISSUE_URL = /^\/api\/(\d+)\/store\/\?sentry_key=(\w+)&/ // match POST /api/12345/store/?sentry_key=hash_hash_hash_hash&sentry_version=7
 
@@ -47,7 +45,7 @@ const CACHE_SIZE_SUM_MAX = 8 * 1024 // count, of cacheKey
 const CACHE_LIMIT_COUNT = 8 // allowed fail during the expire time
 const CACHE_EXPIRE_TIME = 60 * 1000 // in msec, 1min, time to wait until limitLeft is reset
 
-const log = console.log
+const log = (...args) => console.log(new Date().toISOString(), ...args)
 
 const checkIsRateLimit = (rateCacheMap, remoteAddress, cacheLimitCount) => {
   let limitLeft = rateCacheMap.get(remoteAddress)
@@ -58,8 +56,13 @@ const checkIsRateLimit = (rateCacheMap, remoteAddress, cacheLimitCount) => {
   return false
 }
 
+const prefixTime = ({ add, ...loggerExot }) => ({
+  ...loggerExot,
+  add: (...args) => add(new Date().toISOString(), ...args)
+})
+
 const main = async () => {
-  const loggerExot = createLoggerExot({ pathLogDirectory: PATH_LOG, saveInterval: 5 * 1000 })
+  const loggerExot = prefixTime(createLoggerExot({ pathLogDirectory: PATH_LOG, saveInterval: 5 * 1000 }))
   const serverExot = createServerExot({
     protocol: SERVER_PROTOCOL,
     cert: SERVER_PROTOCOL === 'https:' ? BUFFER_CERT_PEM : undefined,

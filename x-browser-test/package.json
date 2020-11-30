@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "build-library-webpack": "node -r @babel/register ./script/webpack production profile",
+    "browser-test": "dr-js -o http://127.0.0.1:54321/TEST.html && dr-js --ssss -H :54321 -R ./"
+  },
+  "dependencies": {
+    "@dr-js/core": "^0.4.1-dev.8",
+    "@dr-js/dev": "^0.4.2",
+    "@dr-js/dev-web": "^0.4.2",
+    "@sentry/browser": "^5.27.6"
+  }
+}

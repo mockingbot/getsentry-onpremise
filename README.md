@@ -8,6 +8,15 @@ Check commits for detail, below is some major change:
 - nginx: pass host nginx `X-Forward-*` headers
 
 
+## Other tips
+
+- Found in `install.sh`: you can create user from CLI, instead of sending mails with: `docker-compose run --rm web createuser`
+- Mails may surly end up in the spam folder, check there if you're being invited through email.
+- DO NOT RUN `docker volume prune`, since the volume is not linked, and this will remove them all,
+  also delete/reset some of the volumes may cause the whole system stop working.
+  So either do full backup, or prepare for fast clean reset.
+
+
 ## host nginx config
 
 ```
@@ -38,20 +47,16 @@ Check commits for detail, below is some major change:
 ```
 
 
-## Other tips
-
-- Found in `install.sh`: you can create user from CLI, instead of sending mails with: `docker-compose run --rm web createuser`
-- Mails may surly end up in the spam folder, check there if you're being invited through email.
-
-
 ## `trysen.js`
 
 Used to custom rate limit issue POST requests, so the sentry docker setup will not get huge backlog,
   and grind the machine to a stall with the unrestrained memory hogging (in redis & kafka mostly)
 
-Check the source, and some config scripts in [./trysen/](./trysen/) for details.
+Check the source code, and some config scripts in [./x-trysen/](./x-trysen/) for details.
+
 
 --- --- --- ---
+
 
 # Self-Hosted Sentry 20.11.1
 

@@ -83,3 +83,7 @@ relay/config.yml
 symbolicator/config.yml
 
 .idea
+
+# Ignore folder of file with `-gitignore`
+**/*-gitignore/**
+**/*-gitignore*

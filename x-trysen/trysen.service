@@ -1,0 +1,18 @@
+# For start on boot, should edit & put under: `/lib/systemd/system/`
+# first `sudo systemctrl start trysen` to test working
+# then `sudo systemctrl enable trysen` to enable startup on boot
+
+[Unit]
+Description="trysen server"
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+User=root
+ExecStart="/EDIT_AND_SET_TO_PATH_TO/getsentry-onpremise/x-trysen/start-server.sh"
+
+[Install]
+WantedBy=multi-user.target
