@@ -3,7 +3,7 @@
 const { resolve } = require('path')
 const { readFileSync } = require('fs')
 const { once } = require('@dr-js/core/library/common/function')
-const { setWeakInterval } = require('@dr-js/core/library/common/time')
+const { setTimeoutAsync, setWeakInterval } = require('@dr-js/core/library/common/time')
 const { createCacheMap } = require('@dr-js/core/library/common/data/CacheMap')
 
 const { quickRunletFromStream } = require('@dr-js/core/library/node/data/Stream')
@@ -100,14 +100,15 @@ const main = async () => {
       'x-forwarded-proto': SERVER_PROTOCOL === 'https:' ? 'https' : 'http'
     }
     const body = store.request // use request stream as body
-    const response = await requestHttp(proxyUrl, { method, headers, timeout: 16 * 1000 }, body).promise
+    const response = await requestHttp(proxyUrl, { method, headers, timeout: 32 * 1000 }, body).promise
     // log(String(proxyUrl), headers, '||', response.statusCode, response.headers)
     store.response.writeHead(response.statusCode, response.headers) // send back status & header
     return quickRunletFromStream(response, store.response) // send back payload
   }
 
-  const responderSilentDrop = (store, remoteAddress, reason) => {
+  const responderSilentDrop = async (store, remoteAddress, reason) => {
     loggerExot.add(`  [DROP|${remoteAddress}] ${reason}`)
+    reason === 'rate-limit' && await setTimeoutAsync(32 * 1000) // hold this connection to reduce the resend rate
     return responderEndWithStatusCode(store, { statusCode: 200 })
   }
 
